@@ -1,4 +1,7 @@
-object basic {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(47); 
+import java.io.PrintWriter
+import scala.io.Source
+
+object basicTut {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(101); 
   val l = List("aaaa", "b", "c");System.out.println("""l  : List[String] = """ + $show(l ));$skip(105); 
  
   /*
@@ -75,8 +78,23 @@ object basic {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
 	 s(1);System.out.println("""res1: Char = """ + $show(res$1));$skip(20); val res$2 = 
 	 s.concat("world");System.out.println("""res2: String = """ + $show(res$2));$skip(12); val res$3 = 
 	 s.toArray;System.out.println("""res3: Array[Char] = """ + $show(res$3));$skip(17); val res$4 = 
-	 s.indexOf("o");System.out.println("""res4: Int = """ + $show(res$4))}
+	 s.indexOf("o");System.out.println("""res4: Int = """ + $show(res$4));$skip(120); 
 
 
+	/*
+	 * IO
+	 * import java.io.PrintWriter
+	 * import scala.io.Source
+	 */
+	var writer = new PrintWriter("testIO.txt");System.out.println("""writer  : java.io.PrintWriter = """ + $show(writer ));$skip(30); 
+	writer.write("test1\ntest2");$skip(16); 
+	writer.close();$skip(52); 
+	
+	var textFromFile = Source.fromFile("testIO.txt");System.out.println("""textFromFile  : scala.io.BufferedSource = """ + $show(textFromFile ));$skip(42); 
+	var lineIterator = textFromFile.getLines;System.out.println("""lineIterator  : Iterator[String] = """ + $show(lineIterator ));$skip(44); 
+	for (line <- lineIterator)
+		println(line);$skip(22); 
+	textFromFile.close()}
+		
 
 }

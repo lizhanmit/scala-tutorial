@@ -1,6 +1,12 @@
-object basic {
+import java.io.PrintWriter
+import scala.io.Source
+
+object basicTut {
   val l = List("aaaa", "b", "c")                  //> l  : List[String] = List(aaaa, b, c)
-  
+ 
+  /*
+   * for block
+   */
   for {
   	i <- l // generator, for each element in the list
   } println (i)                                   //> aaaa
@@ -57,6 +63,26 @@ object basic {
 	}
     
   
+  /*
+   * there is no break and continue in Scala loop
+   */
+  def printPrimes() {
+  	val primeList = List(1,2,3,5,7,11)
+  	for (i <- primeList) {
+  		if (i == 7)
+  			return
+  		println(i)
+  	}
+  }                                               //> printPrimes: ()Unit
+  
+  printPrimes                                     //> 1
+                                                  //| 2
+                                                  //| 3
+                                                  //| 5
+    
+  /*
+   * try catch finally
+   */
   val result_try = try {
   	Integer.parseInt("Dog")
   } catch {
@@ -66,6 +92,9 @@ object basic {
   }                                               //> This is finally.
                                                   //| result_try  : Int = 0
   
+  /*
+   * match block
+   */
   val code = 1                                    //> code  : Int = 1
   val result_match = code match {
   	case 1 => "one"
@@ -74,24 +103,32 @@ object basic {
   }                                               //> result_match  : String = one
   
 
-  // higher-order function
-  def greeting() = (name: String) => {"hi " + name}
-                                                  //> greeting: ()String => String
-  greeting()("LZ")                                //> res1: String = hi LZ
-  
-  
-
-  // anonymous function
-  (x: Int) => {x * x}                             //> res2: Int => Int = basic$$$Lambda$21/748658608@2096442d
-  
-  var add = (x: Int, y: Int) => x + y             //> add  : (Int, Int) => Int = basic$$$Lambda$22/1358444045@2cb4c3ab
-  add(1, 2)                                       //> res3: Int = 3
+	/*
+	 * string
+	 */
+	 var s = "hello "                         //> s  : String = "hello "
+	 s(1)                                     //> res1: Char = e
+	 s.concat("world")                        //> res2: String = hello world
+	 s.toArray                                //> res3: Array[Char] = Array(h, e, l, l, o,  )
+	 s.indexOf("o")                           //> res4: Int = 4
 
 
-	// Curried Function
-	def curriedAdd(a: Int)(b: Int) = a + b    //> curriedAdd: (a: Int)(b: Int)Int
-	curriedAdd(2)(3)                          //> res4: Int = 5
+	/*
+	 * IO
+	 * import java.io.PrintWriter
+	 * import scala.io.Source
+	 */
+	var writer = new PrintWriter("testIO.txt")//> writer  : java.io.PrintWriter = java.io.PrintWriter@337d0578
+	writer.write("test1\ntest2")
+	writer.close()
 	
-	val addOne = curriedAdd(1)_               //> addOne  : Int => Int = basic$$$Lambda$23/331844619@12843fce
-	addOne(2)                                 //> res5: Int = 3
+	var textFromFile = Source.fromFile("testIO.txt")
+                                                  //> textFromFile  : scala.io.BufferedSource = non-empty iterator
+	var lineIterator = textFromFile.getLines  //> lineIterator  : Iterator[String] = non-empty iterator
+	for (line <- lineIterator)
+		println(line)                     //> test1
+                                                  //| test2
+	textFromFile.close()
+		
+
 }
