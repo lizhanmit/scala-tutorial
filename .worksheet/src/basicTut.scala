@@ -22,7 +22,15 @@ object basicTut {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     if (i1 != "")
   } yield (i1);System.out.println("""result_for  : List[String] = """ + $show(result_for ));$skip(14); val res$0 =  // generate a new collection
 
-  result_for;System.out.println("""res0: List[String] = """ + $show(res$0));$skip(109); 
+  result_for;System.out.println("""res0: List[String] = """ + $show(res$0));$skip(110); 
+
+
+  /*
+   * yield
+   * used to return a Vector in the for loop
+   */
+	val f = for (i <- 1 to 5) yield (i + 1);System.out.println("""f  : scala.collection.immutable.IndexedSeq[Int] = """ + $show(f ));$skip(20); 
+	f.foreach(println);$skip(109); 
 
   // until is often used to loop through strings or arrays
   val randLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";System.out.println("""randLetters  : String = """ + $show(randLetters ));$skip(119); 
@@ -67,14 +75,38 @@ object basicTut {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   };System.out.println("""result_match  : String = """ + $show(result_match ));$skip(41); 
 
   /*
-	 * string
+	 * String
 	 */
   var s = "hello ";System.out.println("""s  : String = """ + $show(s ));$skip(7); val res$1 = 
   s(1);System.out.println("""res1: Char = """ + $show(res$1));$skip(20); val res$2 = 
   s.concat("world");System.out.println("""res2: String = """ + $show(res$2));$skip(12); val res$3 = 
   s.toArray;System.out.println("""res3: Array[Char] = """ + $show(res$3));$skip(17); val res$4 = 
-  s.indexOf("o");System.out.println("""res4: Int = """ + $show(res$4));$skip(121); 
+  s.indexOf("o");System.out.println("""res4: Int = """ + $show(res$4));$skip(61); 
 
+
+  /*
+	 * Iterator
+	 */
+	val iter = Iterator("a", "b", "c");System.out.println("""iter  : Iterator[String] = """ + $show(iter ));$skip(41); 
+	while (iter.hasNext) println(iter.next);$skip(146); 
+	// or
+	// as long as the Iterator has been accessed, it will be empty
+	// so here is nothing to be printed out
+	for (elem <- iter) println(elem);$skip(32); 
+	
+	val myList = List(1,2,3,4,5);System.out.println("""myList  : List[Int] = """ + $show(myList ));$skip(67); 
+	// fixed-sized sequence “chunks”.
+	val myGroup = myList grouped 3;System.out.println("""myGroup  : Iterator[List[Int]] = """ + $show(myGroup ));$skip(14); val res$5 = 
+	myGroup.next;System.out.println("""res5: List[Int] = """ + $show(res$5));$skip(14); val res$6 = 
+	myGroup.next;System.out.println("""res6: List[Int] = """ + $show(res$6));$skip(65); 
+	// sliding fixed-sized window
+	val mySliding = myList sliding 3;System.out.println("""mySliding  : Iterator[List[Int]] = """ + $show(mySliding ));$skip(16); val res$7 = 
+	mySliding.next;System.out.println("""res7: List[Int] = """ + $show(res$7));$skip(16); val res$8 = 
+	mySliding.next;System.out.println("""res8: List[Int] = """ + $show(res$8));$skip(16); val res$9 = 
+	mySliding.next;System.out.println("""res9: List[Int] = """ + $show(res$9));$skip(126); 
+	
+	
+	
   /*
 	 * IO
 	 * import java.io.PrintWriter

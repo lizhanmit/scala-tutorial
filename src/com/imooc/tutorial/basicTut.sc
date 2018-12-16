@@ -26,6 +26,18 @@ object basicTut {
 
   result_for                                      //> res0: List[String] = List(AAAA, B, C)
 
+
+  /*
+   * yield
+   * used to return a Vector in the for loop
+   */
+	val f = for (i <- 1 to 5) yield (i + 1)   //> f  : scala.collection.immutable.IndexedSeq[Int] = Vector(2, 3, 4, 5, 6)
+	f.foreach(println)                        //> 2
+                                                  //| 3
+                                                  //| 4
+                                                  //| 5
+                                                  //| 6
+
   // until is often used to loop through strings or arrays
   val randLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  //> randLetters  : String = ABCDEFGHIJKLMNOPQRSTUVWXYZ
   for (i <- 0 until randLetters.length) {
@@ -98,7 +110,7 @@ object basicTut {
   }                                               //> result_match  : String = one
 
   /*
-	 * string
+	 * String
 	 */
   var s = "hello "                                //> s  : String = "hello "
   s(1)                                            //> res1: Char = e
@@ -106,12 +118,38 @@ object basicTut {
   s.toArray                                       //> res3: Array[Char] = Array(h, e, l, l, o,  )
   s.indexOf("o")                                  //> res4: Int = 4
 
+
+  /*
+	 * Iterator
+	 */
+	val iter = Iterator("a", "b", "c")        //> iter  : Iterator[String] = non-empty iterator
+	while (iter.hasNext) println(iter.next)   //> a
+                                                  //| b
+                                                  //| c
+	// or
+	// as long as the Iterator has been accessed, it will be empty
+	// so here is nothing to be printed out
+	for (elem <- iter) println(elem)
+	
+	val myList = List(1,2,3,4,5)              //> myList  : List[Int] = List(1, 2, 3, 4, 5)
+	// fixed-sized sequence “chunks”.
+	val myGroup = myList grouped 3            //> myGroup  : Iterator[List[Int]] = non-empty iterator
+	myGroup.next                              //> res5: List[Int] = List(1, 2, 3)
+	myGroup.next                              //> res6: List[Int] = List(4, 5)
+	// sliding fixed-sized window
+	val mySliding = myList sliding 3          //> mySliding  : Iterator[List[Int]] = non-empty iterator
+	mySliding.next                            //> res7: List[Int] = List(1, 2, 3)
+	mySliding.next                            //> res8: List[Int] = List(2, 3, 4)
+	mySliding.next                            //> res9: List[Int] = List(3, 4, 5)
+	
+	
+	
   /*
 	 * IO
 	 * import java.io.PrintWriter
 	 * import scala.io.Source
 	 */
-  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@5cc7c2a6
+  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@62ee68d8
   writer.write("test1\ntest2")
   writer.close()
 
