@@ -6,7 +6,7 @@ In functional programming language, it is encouraged to use immutable constants 
 
 ### Console Input & Output
 
-Need `import io.StdIn._` before using.
+Need `import io.StdIn._` before using it.
 
 - `readInt`
 - `readDouble`

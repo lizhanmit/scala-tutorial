@@ -15,7 +15,9 @@ object LearningScala4 {;import org.scalaide.worksheet.runtime.library.WorksheetS
   println(captainStuff._3);$skip(94); 
 
   // You can create a key/value pair with ->
-  val picardsShip = "Picard" -> "Enterprise-D";System.out.println("""picardsShip  : (String, String) = """ + $show(picardsShip ));$skip(26); 
+  val picardsShip = "Picard" -> "Enterprise-D";System.out.println("""picardsShip  : (String, String) = """ + $show(picardsShip ));$skip(99); 
+  // it is the same as
+  // val picardsShip = ("Picard", "Enterprise-D")
   println(picardsShip._2);$skip(89); 
 
   // You can mix different types in a tuple

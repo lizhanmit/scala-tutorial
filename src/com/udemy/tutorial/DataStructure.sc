@@ -17,6 +17,8 @@ object LearningScala4 {
 
   // You can create a key/value pair with ->
   val picardsShip = "Picard" -> "Enterprise-D"    //> picardsShip  : (String, String) = (Picard,Enterprise-D)
+  // it is the same as
+  // val picardsShip = ("Picard", "Enterprise-D")
   println(picardsShip._2)                         //> Enterprise-D
 
   // You can mix different types in a tuple
