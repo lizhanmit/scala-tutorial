@@ -3,6 +3,9 @@ package com.officialSite.tutorial
 import java.util.{Date, Locale}
 import java.text.DateFormat._
 
+/**
+ * Interaction with Java
+ */
 object FrenchDate {
   def main(args: Array[String]): Unit = {
     val now = new Date
