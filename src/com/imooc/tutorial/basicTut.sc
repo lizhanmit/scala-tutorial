@@ -101,6 +101,7 @@ object basicTut {
 
   /*
    * match block
+   * pattern matching
    */
   val code = 1                                    //> code  : Int = 1
   val result_match = code match {
@@ -149,7 +150,7 @@ object basicTut {
 	 * import java.io.PrintWriter
 	 * import scala.io.Source
 	 */
-  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@62ee68d8
+  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@6d00a15d
   writer.write("test1\ntest2")
   writer.close()
 
