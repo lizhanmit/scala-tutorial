@@ -4,6 +4,15 @@
 - Static members (methods or fields) do not exist in Scala. Rather than defining static members, the Scala programmer declares these members in singleton objects.
 - `Any` is a super-type of all other types in Scala.
 
+### Default Values
+
+- 0 for numeric types
+- false for the Boolean type
+- () for the Unit type 
+- null for all object types
+
+For generic type, assign it as `_`.
+
 ### Case Classes
 
 Differ from standard classes in the following ways: 
