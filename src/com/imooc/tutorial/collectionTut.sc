@@ -93,13 +93,17 @@ object collectionTut {
   // ::, add an element at the beginning of a list
   a = 0 :: a
   println(a)                                      //> List(0, 1, 2, 3)
+  // add an element at the end of a list
+  a = a :+ 4
+  println(a)                                      //> List(0, 1, 2, 3, 4)
+  
   
   var b = List(5, 6)                              //> b  : List[Int] = List(5, 6)
   // :::, connect two lists
   b = b ::: a
   // or
   b = b ++ a
-	println(b)                                //> List(5, 6, 0, 1, 2, 3, 0, 1, 2, 3)
+	println(b)                                //> List(5, 6, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4)
 	
 	
   // list.head, get the first element in the list
@@ -109,7 +113,7 @@ object collectionTut {
     else l.head.toString + " " + walkthru(l.tail)
   }                                               //> walkthru: (l: List[Int])String
 
-  walkthru(b)                                     //> res16: String = "5 6 0 1 2 3 0 1 2 3 "
+  walkthru(b)                                     //> res16: String = "5 6 0 1 2 3 4 0 1 2 3 4 "
 
   // get odd numbers in the list
   a.filter(x => x % 2 == 1)                       //> res17: List[Int] = List(1, 3)
@@ -127,15 +131,15 @@ object collectionTut {
 
   a.filter(_ % 2 == 1).map(_ + 10)                //> res22: List[Int] = List(11, 13)
 
-  var q = List(a, b)                              //> q  : List[List[Int]] = List(List(0, 1, 2, 3), List(5, 6, 0, 1, 2, 3, 0, 1, 
-                                                  //| 2, 3))
+  var q = List(a, b)                              //> q  : List[List[Int]] = List(List(0, 1, 2, 3, 4), List(5, 6, 0, 1, 2, 3, 4, 
+                                                  //| 0, 1, 2, 3, 4))
   q.map(_.filter(_ % 2 == 1))                     //> res23: List[List[Int]] = List(List(1, 3), List(5, 1, 3, 1, 3))
   // flatMap is used to merge two lists in the result
   q.flatMap(_.filter(_ % 2 == 1))                 //> res24: List[Int] = List(1, 3, 5, 1, 3, 1, 3)
 
-  a.reduceLeft(_ + _)                             //> res25: Int = 6
+  a.reduceLeft(_ + _)                             //> res25: Int = 10
   // with start value: 0
-  a.foldLeft(0)(_ + _)                            //> res26: Int = 6
+  a.foldLeft(0)(_ + _)                            //> res26: Int = 10
   // with start value: 1
   a.foldLeft(1)(_ * _)                            //> res27: Int = 0
 
