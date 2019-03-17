@@ -1,5 +1,7 @@
 # Scala Tutorial
 
+## Concepts 
+
 - `object` declaration is commonly known as a singleton object.
 - Static members (methods or fields) do not exist in Scala. Rather than defining static members, the Scala programmer declares these members in singleton objects.
 
@@ -24,17 +26,73 @@ For generic type, assign it as `_`.
 
 ---
 
+### Functions
+
+A function's name can have characters like +, ++, ~, &,-, --, \, /, :, etc.
+
+---
+
+### Methods VS Functions
+
+- A method is a part of a class which has a name, a signature, optionally some annotations, and some bytecode.
+- A function is a complete object which can be assigned to a variable.
+- In other words, a function, which is defined as a member of some object, is called a method.
+
+```scala
+// method
+def m1(x: Int) = x + x
+m1(2)  // 4
+
+// function
+val f1 = (x: Int) => x + x
+f1(2)  // 4
+
+f1  // Int => Int = <function1>
+m1  // error: missing argument list for method m1...
+```
+
+#### Converting Method into A Function
+
+Method can be converted into a proper function (often referred to as lifting) by calling method with underscore “_” after method name.
+
+```scala
+val f2 = m1 _  // Int => Int = <function1>
+```
+
+#### When to Use Methods and When Functions
+
+- Use functions if you need to pass them around as parameters.
+- Use functions if you want to act on their instances, e.g. `f1.compose(f2)(2)`.
+- Use methods if you want to use default values for parameters e.g. `def m1(age: Int = 2) = ...`.
+- Use methods if you just need to compute and return.
+
+---
+
 ### Case Classes
+
+Case classes are good for modeling **immutable** data.
+
+#### Case Classes VS Classes
 
 Differ from standard classes in the following ways: 
 
- - do not need to write `new` when creating the instance.
- - do not need to write getter method in class. You can get through `.` directly. 
- - `equals`, `hashCode` and `toString` methods are provided.
- - instances of these classes can be decomposed through pattern matching. 
- - compared by value.
- 
+- Do not need to write `new` when creating the instance. This is because case classes have an `apply` method by default which takes care of object construction.
+- Do not need to write getter method in class. You can get through `.` directly. 
+- `equals`, `hashCode` and `toString` methods are provided.
+- Instances of these classes can be decomposed through pattern matching. 
+- Case classes are compared by structure / value and not by reference. (see the code below)
+- When you create a case class with parameters, the parameters are public `val`s. 
+
+**For standard classes:**
+
+- Primary constructor parameters with `val` and `var` are public. 
+- Parameters without `val` or `var` are private values.
+
+
+
 ```scala
+case class Point(x: Int, y: Int)
+
 val point = Point(1, 2)
 val anotherPoint = Point(1, 2)
 val yetAnotherPoint = Point(2, 2)
@@ -54,6 +112,25 @@ if (point == yetAnotherPoint) {
 
 ---
 
+### Sealed Classes
+
+Traits and classes can be marked `sealed` which means all subtypes must be declared in the same file. This assures that all subtypes are known.
+
+```scala
+sealed abstract class Furniture
+case class Couch() extends Furniture
+case class Chair() extends Furniture
+
+def findPlaceToSit(piece: Furniture): String = piece match {
+  case a: Couch => "Lie on the couch"
+  case b: Chair => "Sit on the chair"
+}
+```
+
+This is useful for pattern matching because we do not need a “catch all” case.
+
+---
+
 ### Variables
 
 In functional programming language, it is encouraged to use immutable constants whenever possible. In Scala, use `val` as possible as you can rather that `var`.
@@ -62,7 +139,76 @@ In functional programming language, it is encouraged to use immutable constants 
 
 ### Traits
 
-When a trait extends an abstract class, it does not need to implement the abstract members.
+- When a trait extends an abstract class, it does not need to implement the abstract members.
+- Traits cannot have parameters.
+
+```scala
+trait Iterator[A] {
+  def hasNext: Boolean
+  def next(): A
+}
+
+
+class IntIterator(to: Int) extends Iterator[Int] {
+  private var current = 0
+  override def hasNext: Boolean = current < to
+  override def next(): Int =  {
+    if (hasNext) {
+      val t = current
+      current += 1
+      t
+    } else 0
+  }
+}
+
+
+val iterator = new IntIterator(10)
+iterator.next()  // returns 0
+iterator.next()  // returns 1
+```
+
+---
+
+### Higher Order Functions
+
+Higher order functions take other functions as parameters or return a function as a result.
+
+```scala
+// here, map() is the higher order function
+val salaries = Seq(20000, 70000, 40000)
+val doubleSalary = (x: Int) => x * 2
+val newSalaries = salaries.map(doubleSalary) // List(40000, 140000, 80000)
+// or
+val newSalaries = salaries.map(x => x * 2)
+// or 
+val newSalaries = salaries.map(_ * 2)
+```
+
+#### A Method that Returns A Function
+
+```scala
+def urlBuilder(ssl: Boolean, domainName: String): (String, String) => String = {
+  val schema = if (ssl) "https://" else "http://"
+  (endpoint: String, query: String) => s"$schema$domainName/$endpoint?$query"
+}
+
+val domainName = "www.example.com"
+def getURL = urlBuilder(ssl=true, domainName)
+val endpoint = "users"
+val query = "id=1"
+val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": String
+```
+
+---
+
+### Companion Objects & Classes
+
+- An object with the same name as a class is called a companion object. 
+- Conversely, the class is the object’s companion class. 
+- A companion class or object can access the private members of its companion. 
+- Use a companion object for methods and values which are not specific to instances of the companion class.
+- **NOTE**: If a class or object has a companion, both must be defined in the same file. 
+- `static` members in Java are modeled as ordinary members of a companion object in Scala.
 
 ---
 
@@ -79,3 +225,23 @@ Need `import io.StdIn._` before using it.
 - `readChar`
 - `readBoolean`
 - `readLine`: can have a parameter as prompt.
+
+---
+
+## Snippets
+
+### Factorial Method
+
+```scala
+// nested method
+ def factorial(x: Int): Int = {
+    def fact(x: Int, accumulator: Int): Int = {
+      if (x <= 1) accumulator
+      else fact(x - 1, x * accumulator)
+    }  
+    fact(x, 1)
+ }
+
+ println("Factorial of 2: " + factorial(2))
+ println("Factorial of 3: " + factorial(3))
+```
