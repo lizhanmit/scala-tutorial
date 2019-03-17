@@ -7,6 +7,9 @@
 
 - `Any` is a super-type of all other types in Scala.
 - The type `Unit` refers to nothing meaningful, which is similarly to `void` in Java.
+  - **All functions must return something.** If you do not want to return, return `Unit`. 
+  - One instance of `Unit` can be declared literally like `()`.
+- `Null` is provided mostly for interoperability with other JVM languages and should almost **never** be used in Scala code. 
 
 ---
 
