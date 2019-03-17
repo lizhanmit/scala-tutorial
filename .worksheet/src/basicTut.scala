@@ -73,7 +73,17 @@ object basicTut {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     case 1 => "one"
     case 2 => "two"
     case _ => "others"
-  };System.out.println("""result_match  : String = """ + $show(result_match ));$skip(42); 
+  };System.out.println("""result_match  : String = """ + $show(result_match ));$skip(121); 
+
+val planets =
+  List(("Mercury", 57.9), ("Venus", 108.2), ("Earth", 149.6),
+       ("Mars", 227.9), ("Jupiter", 778.3));System.out.println("""planets  : List[(String, Double)] = """ + $show(planets ));$skip(133); 
+planets.foreach{
+  case ("Earth", distance) =>
+    println(s"Our planet is $distance million kilometers from the sun")
+  case _ =>
+};$skip(43); 
+
 
   /*
 	 * String

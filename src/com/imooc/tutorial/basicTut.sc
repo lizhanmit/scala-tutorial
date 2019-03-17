@@ -110,6 +110,17 @@ object basicTut {
     case _ => "others"
   }                                               //> result_match  : String = one
 
+val planets =
+  List(("Mercury", 57.9), ("Venus", 108.2), ("Earth", 149.6),
+       ("Mars", 227.9), ("Jupiter", 778.3))       //> planets  : List[(String, Double)] = List((Mercury,57.9), (Venus,108.2), (Ea
+                                                  //| rth,149.6), (Mars,227.9), (Jupiter,778.3))
+planets.foreach{
+  case ("Earth", distance) =>
+    println(s"Our planet is $distance million kilometers from the sun")
+  case _ =>
+}                                                 //> Our planet is 149.6 million kilometers from the sun
+
+
   /*
 	 * String
 	 */
@@ -150,7 +161,7 @@ object basicTut {
 	 * import java.io.PrintWriter
 	 * import scala.io.Source
 	 */
-  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@6d00a15d
+  var writer = new PrintWriter("testIO.txt")      //> writer  : java.io.PrintWriter = java.io.PrintWriter@7dc7cbad
   writer.write("test1\ntest2")
   writer.close()
 
