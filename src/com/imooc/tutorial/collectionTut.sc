@@ -152,8 +152,8 @@ object collectionTut {
   m.keys                                          //> res30: Iterable[Int] = Set(1, 2)
   m.values                                        //> res31: Iterable[String] = MapLike.DefaultValuesIterable(a, b)
   // +, add a key-value pair in the Map
-  m + (3 -> "c")                                  //> res32: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -
-                                                  //| > c)
+  m + (3 -> "c") + (26 -> "z")                    //> res32: scala.collection.immutable.Map[Int,String] = Map(1 -> a, 2 -> b, 3 -
+                                                  //| > c, 26 -> z)
   // remove a specific key-value pair from the Map by key
   m - (1)                                         //> res33: scala.collection.immutable.Map[Int,String] = Map(2 -> b)
   // add more than one key-value pairs in the Map
