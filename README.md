@@ -88,8 +88,6 @@ Differ from standard classes in the following ways:
 - Primary constructor parameters with `val` and `var` are public. 
 - Parameters without `val` or `var` are private values.
 
-
-
 ```scala
 case class Point(x: Int, y: Int)
 
@@ -209,6 +207,45 @@ val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": Strin
 - Use a companion object for methods and values which are not specific to instances of the companion class.
 - **NOTE**: If a class or object has a companion, both must be defined in the same file. 
 - `static` members in Java are modeled as ordinary members of a companion object in Scala.
+
+---
+
+### Collections
+
+A useful convention if you want to use both mutable and immutable versions of collections is to import just the package `scala.collection.mutable`.
+
+---
+
+### Implicit Parameters
+
+A method can have an implicit parameter list, marked by the implicit keyword at the start of the parameter list. If the parameters in that parameter list are not passed as usual, Scala will look if it can get an implicit value of the correct type, and if it can, pass it automatically.
+
+```scala
+abstract class Monoid[A] {
+  def add(x: A, y: A): A
+  def unit: A
+}
+
+object ImplicitTest {
+  implicit val stringMonoid: Monoid[String] = new Monoid[String] {
+    def add(x: String, y: String): String = x concat y
+    def unit: String = ""
+  }
+  
+  implicit val intMonoid: Monoid[Int] = new Monoid[Int] {
+    def add(x: Int, y: Int): Int = x + y
+    def unit: Int = 0
+  }
+  
+  def sum[A](xs: List[A])(implicit m: Monoid[A]): A =
+    if (xs.isEmpty) m.unit
+    else m.add(xs.head, sum(xs.tail))
+    
+  def main(args: Array[String]): Unit = {
+    println(sum(List(1, 2, 3)))       // uses intMonoid implicitly
+    println(sum(List("a", "b", "c"))) // uses stringMonoid implicitly
+  }
+```
 
 ---
 
