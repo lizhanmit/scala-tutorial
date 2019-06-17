@@ -15,7 +15,7 @@ object ForComprehensions {
         val someUsers = for (user <- userBase if (user.age >= 20 && user.age < 30)) yield user.name
         someUsers.foreach(println)
         
-        
+
         def foo(n: Int, v: Int) = {
             for (i <- 0 until n; j <- 0 until n if i + j == v) yield (i, j)
         }

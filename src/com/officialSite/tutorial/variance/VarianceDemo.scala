@@ -3,7 +3,7 @@ package com.officialSite.tutorial.variance
 /**
  * Covariance: <className>[+A]
  * if A is a subtype of B
- * List[A] is a subtype of List[B]
+ * <className>[A] is a subtype of <className>[B]
  *
  * Contravariance: <className>[-A]
  * if A is a subtype of B
