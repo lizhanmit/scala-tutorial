@@ -15,6 +15,24 @@
 
 ---
 
+### Type Inference
+
+For recursive methods, the compiler is **NOT** able to infer a result type.
+
+For example:
+
+```scala
+// compile error
+def fac(n: Int) = if (n == 0) 1 else n * fac(n - 1)
+```
+
+When **NOT** to rely on type inference:
+
+- **Recommended** that you make the type explicit for any APIs that will be exposed to users of your code.
+- Type inference can sometimes infer a too-specific type. For example, `var obj = null`. `obj` is Null type, and cannot be reassigned to a different type value.
+
+---
+
 ### Default Values
 
 - 0 for numeric types
