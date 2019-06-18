@@ -2,8 +2,11 @@
 
 ## Concepts 
 
-- `object` declaration is commonly known as a singleton object.
-- Static members (methods or fields) do not exist in Scala. Rather than defining static members, the Scala programmer declares these members in singleton objects.
+`object` declaration is commonly known as a singleton object.
+
+Static members (methods or fields) do not exist in Scala. Rather than defining static members, the Scala programmer declares these members in singleton objects.
+
+The package name should be **all lower case**. 
 
 ### Types
 
@@ -264,6 +267,22 @@ object ImplicitTest {
     println(sum(List("a", "b", "c"))) // uses stringMonoid implicitly
   }
 ```
+
+---
+
+### Performance
+
+#### By-name Parameters
+
+By-name parameters are only evaluated when used, in contrast to by-value parameters, which is evaluated only once.
+
+prepend `=>` to its type
+
+For example, `def calculate(input: => Int) = input * 37`.
+
+**Using by-name parameters to delay evaluation of a parameter until it is used can help performance if the parameter is computationally intensive to evaluate or a longer-running block of code such as fetching a URL.**
+
+
 
 ---
 
