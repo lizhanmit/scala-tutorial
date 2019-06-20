@@ -1,6 +1,6 @@
 # Scala Tutorial
 
-## Concepts 
+## Basics 
 
 `object` declaration is commonly known as a singleton object.
 
@@ -10,6 +10,7 @@ The package name should be **all lower case**.
 
 ### Types
 
+- In Scala, every expression has a type.
 - `Any` is a super-type of all other types in Scala.
 - The type `Unit` refers to nothing meaningful, which is similarly to `void` in Java.
   - **All functions must return something.** If you do not want to return, return `Unit`. 
@@ -20,12 +21,13 @@ The package name should be **all lower case**.
 
 ### Type Inference
 
-For recursive methods, the compiler is **NOT** able to infer a result type.
+For recursive methods, the compiler is **NOT** able to infer a result type. Therefore, you **MUST** specify the return type.
 
 For example:
 
 ```scala
 // compile error
+// Scala compiler could not verify that the type of n * fac(n - 1) is an Int 
 def fac(n: Int) = if (n == 0) 1 else n * fac(n - 1)
 ```
 
@@ -47,9 +49,37 @@ For generic type, assign it as `_`.
 
 ---
 
+### Loop
+
+In Scala, loops are not used as often as in other languages.
+
+Scala has no break or continue. But alternative solutions:
+
+- Use a Boolean control variable.
+- Use nested functions — you can return from the middle of a function.
+- Use the break method in the Breaks object:
+
+```scala
+import scala.util.control.Breaks._
+
+breakable {
+  for (...) {
+    if (...) break; //  Exits the  breakable block
+    ...
+  }
+}
+```
+
+Here, the control transfer is done by throwing and catching an exception,
+so you should **avoid this mechanism when time is of essence**.
+
+---
+
 ### Functions
 
 A function's name can have characters like +, ++, ~, &,-, --, \, /, :, etc.
+
+The last expression of the block becomes the value that the function returns.
 
 ---
 
@@ -58,6 +88,8 @@ A function's name can have characters like +, ++, ~, &,-, --, \, /, :, etc.
 - A method is a part of a class which has a name, a signature, optionally some annotations, and some bytecode.
 - A function is a complete object which can be assigned to a variable.
 - In other words, a function, which is defined as a member of some object, is called a method.
+- A method operates on an object, but a function does not.
+- In Java, imitate functions with static methods.
 
 ```scala
 // method
@@ -65,6 +97,7 @@ def m1(x: Int) = x + x
 m1(2)  // 4
 
 // function
+// do not have to use val
 val f1 = (x: Int) => x + x
 f1(2)  // 4
 
@@ -86,6 +119,14 @@ val f2 = m1 _  // Int => Int = <function1>
 - Use functions if you want to act on their instances, e.g. `f1.compose(f2)(2)`.
 - Use methods if you want to use default values for parameters e.g. `def m1(age: Int = 2) = ...`.
 - Use methods if you just need to compute and return.
+
+---
+
+### Return
+
+`return` is not commonly used in Scala, although noting wrong if you use it.
+
+Think of `return` as a kind of break statement for functions, and **only** use it when you want that breakout functionality.
 
 ---
 
@@ -153,6 +194,25 @@ This is useful for pattern matching because we do not need a “catch all” cas
 ### Variables
 
 In functional programming language, it is encouraged to use immutable constants whenever possible. In Scala, use `val` as possible as you can rather that `var`.
+
+#### `val` VS `lazy val` VS `def`
+
+Lazy values are useful to delay costly initialization statements.
+
+Laziness is not cost-free. 
+
+Think of lazy values as halfway between `val` and `def`.
+
+```scala
+// Evaluated as soon as words is defined
+val words = scala.io.Source.fromFile("/usr/share/dict/words").mkString
+
+// Evaluated the first time words is used
+lazy val words = scala.io.Source.fromFile("/usr/share/dict/words").mkString
+
+// Evaluated every time words is used
+def words = scala.io.Source.fromFile("/usr/share/dict/words").mkString
+```
 
 ---
 
@@ -281,8 +341,6 @@ prepend `=>` to its type
 For example, `def calculate(input: => Int) = input * 37`.
 
 **Using by-name parameters to delay evaluation of a parameter until it is used can help performance if the parameter is computationally intensive to evaluate or a longer-running block of code such as fetching a URL.**
-
-
 
 ---
 
