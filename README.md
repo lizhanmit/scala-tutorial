@@ -130,6 +130,44 @@ Think of `return` as a kind of break statement for functions, and **only** use i
 
 ---
 
+### Classes
+
+In Scala, a class is not declared as `public`.
+
+#### `()` of Methods
+
+Good style: 
+
+- Use `()` for mutator methods.
+- Drop `()` for accessor methods.
+
+```scala
+class Counter {
+	private var value = 0  // must initialize the field
+	def increment() {value += 1}
+	def current = value  // no () here, must call the method without parentheses
+}
+```
+
+#### Getters & Setters
+
+Fields in classes **automatically** come with getters and setters.
+
+- If the field is private, the getter and setter methods are private.
+- If the field is non-private, the getter and setter methods are public.
+- If the field is a `val`, **only** a getter is generated. If the value of the property never changes after the object has been constructed, use a `val` field.
+- If you do not want any getter or setter, declare the field as `private[this]`. (not commonly used)
+
+#### Primary Constructor
+
+In Scala, every class has a primary constructor.
+
+If there are no parameters after the class name, then the class has a primary constructor with no parameters.
+
+The primary constructor executes all statements in the class definition.
+
+---
+
 ### Case Classes
 
 Case classes are good for modeling **immutable** data.
