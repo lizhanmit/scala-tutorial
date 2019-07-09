@@ -177,10 +177,11 @@ Case classes are good for modeling **immutable** data.
 Differ from standard classes in the following ways: 
 
 - Do not need to write `new` when creating the instance. This is because case classes have an `apply` method by default which takes care of object construction.
+- Every case class automatically has `apply` and `unapply` methods.
 - Do not need to write getter method in class. You can get through `.` directly. 
 - `equals`, `hashCode` and `toString` methods are provided.
 - Instances of these classes can be decomposed through pattern matching. 
-- Case classes are compared by structure / value and not by reference. (see the code below)
+- **Case classes are compared by structure / value and not by reference.** (see the code below)
 - When you create a case class with parameters, the parameters are public `val`s. 
 
 **For standard classes:**
@@ -284,6 +285,38 @@ iterator.next()  // returns 0
 iterator.next()  // returns 1
 ```
 
+#### Trait Extending Classes
+
+Class A extends class B and trait C, trait C extends class D which is the superclass of class B. This situation is OK.
+
+If class B is unrelated to class D, not OK,
+multiple inheritance.
+
+#### Self Types
+
+Self type is used to specify what kind of classes can extend this trait.
+
+Example: 
+
+```scala
+trait LoggedException extends ConsoleLogger {
+    this: Exception =>
+        def log() = { log(getMessage()) }
+}
+```
+
+Only subclasses of Exception can mix in this trait.
+
+Example:
+
+```scala
+trait LoggedException extends ConsoleLogger {
+    this: { def getMessage(): String } =>
+        def log() = { log(getMessage()) }
+}
+```
+Only classes with `getMessage()` method can mix in this trait.
+
 ---
 
 ### Higher Order Functions
@@ -323,8 +356,8 @@ val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": Strin
 - An object with the same name as a class is called a companion object. 
 - Conversely, the class is the object’s companion class. 
 - A companion class or object can access the private members of its companion. 
-- Use a companion object for methods and values which are not specific to instances of the companion class.
 - **NOTE**: If a class or object has a companion, both must be defined in the same file. 
+- Use a companion object for methods and values that are not specific to instances of the companion class.
 - `static` members in Java are modeled as ordinary members of a companion object in Scala.
 
 ---
