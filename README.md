@@ -81,6 +81,8 @@ A function's name can have characters like +, ++, ~, &,-, --, \, /, :, etc.
 
 The last expression of the block becomes the value that the function returns.
 
+In Scala, you can define a function inside any scope.
+
 ---
 
 ### Methods VS Functions
@@ -90,6 +92,7 @@ The last expression of the block becomes the value that the function returns.
 - In other words, a function, which is defined as a member of some object, is called a method.
 - A method operates on an object, but a function does not.
 - In Java, imitate functions with static methods.
+- **Anything defined with `def` is a method, not a function.**
 
 ```scala
 // method
