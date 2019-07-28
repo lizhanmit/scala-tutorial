@@ -83,9 +83,7 @@ The last expression of the block becomes the value that the function returns.
 
 In Scala, you can define a function inside any scope.
 
----
-
-### Methods VS Functions
+#### Methods VS Functions
 
 - A method is a part of a class which has a name, a signature, optionally some annotations, and some bytecode.
 - A function is a complete object which can be assigned to a variable.
@@ -108,7 +106,7 @@ f1  // Int => Int = <function1>
 m1  // error: missing argument list for method m1...
 ```
 
-#### Converting Method into A Function
+##### Converting Method into A Function
 
 Method can be converted into a proper function (often referred to as lifting) by calling method with underscore “_” after method name.
 
@@ -116,12 +114,33 @@ Method can be converted into a proper function (often referred to as lifting) by
 val f2 = m1 _  // Int => Int = <function1>
 ```
 
-#### When to Use Methods and When Functions
+##### When to Use Methods and When Functions
 
 - Use functions if you need to pass them around as parameters.
 - Use functions if you want to act on their instances, e.g. `f1.compose(f2)(2)`.
 - Use methods if you want to use default values for parameters e.g. `def m1(age: Int = 2) = ...`.
 - Use methods if you just need to compute and return.
+
+#### Currying
+
+Currying is the process of turning a function that takes two arguments into a function that takes one argument. That function returns a function that consumes the second argument.
+
+Example:
+
+```scala
+// normal function
+val mul = (x: Int, y: Int) => x * y
+// invoke
+mul(6, 7)  // 42
+
+// curry function
+val mulOneAtATime = (x: Int) => ((y: Int) => x * y)
+// invoke
+mulOneAtATime(6)(7)  // 42
+
+// method
+def mulOneAtATimeMethod(x: Int)(y: Int) = x * y
+```
 
 ---
 
@@ -130,6 +149,21 @@ val f2 = m1 _  // Int => Int = <function1>
 `return` is not commonly used in Scala, although noting wrong if you use it.
 
 Think of `return` as a kind of break statement for functions, and **only** use it when you want that breakout functionality.
+
+If you use `return` inside a named function, you need to specify its return type when defining the function.
+
+Example:
+
+```scala
+def indexOf(str: String, ch: Char): Int = {  // specify Int return type
+    var i = 0
+    until (i == str.length) {
+        if (str(i) == ch) return i
+        i += 1
+    }
+    return -1
+}
+```
 
 ---
 
@@ -367,7 +401,68 @@ val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": Strin
 
 ### Collections
 
+![scala-collections.png](img/scala-collections.png)
+
 A useful convention if you want to use both mutable and immutable versions of collections is to import just the package `scala.collection.mutable`.
+
+Uniform creation principle: Each Scala collection trait or class has a companion object with an `apply` method for constructing an instance of the collection. 
+
+Use the `==` operator to compare any sequence, set, or map with another collection of the same kind. E.g. `Seq(1, 2, 3) == (1 to 3)  // true`.
+
+#### Mutable 
+
+![scala-mutable-collections.png](img/scala-mutable-collections.png)
+
+#### Immutable
+
+![scala-immutable-collections.png](img/scala-immutable-collections.png)
+
+Immutable collections are thread safe. **By default, Scala uses immutable collections.** You should use immutable collections in preference.
+
+If elements are repeatable, use `List` or `Seq`.
+
+#### Vector
+
+A `Vector` is the immutable equivalent of an  `ArrayBuffer`: an indexed sequence with
+fast random access. Vectors are implemented as trees where each node has up to 32 children. 
+
+#### List
+
+A list is either `Nil` or an object with a  head element and a tail that is again a list.
+
+`::` is right-associative.
+
+The result of `9 :: List(4, 2)` is `List(9, 4, 2)`. **Cannot** `List(4, 2) :: 9`.
+
+**It is more natural to use recursion to traverse a linked list.** For instance, 
+
+```scala
+def sum(lst: List[Int]): Int = 
+    if (lst == Nil) 0 else lst.head + sum(lst.tail)
+
+// or 
+def sum(lst: List[Int]): Int = lst match {
+    case Nil => 0
+    case head :: tail => head + sum(tail)
+}
+
+// actually for this particular example
+// you can use
+lst.sum
+```
+
+#### Set
+
+By default, sets are implemented as hash sets in which elements are organized by the value
+of the `hashCode` method.
+
+**Sets actually have order. But the order is not insertion order.**
+
+For linked hash sets, the order is insertion order.
+
+**Finding an element in a hash set is much faster than in an array or list.**
+
+
 
 ---
 
