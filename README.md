@@ -462,7 +462,17 @@ For linked hash sets, the order is insertion order.
 
 **Finding an element in a hash set is much faster than in an array or list.**
 
+#### Operators 
 
+- Append `(:+)` or prepend `(+:)` to a sequence.
+- Add `(+)` to an unordered collection.
+- Remove with the `-` operator.
+- Use `++` and `--` for bulk add and remove.
+- Mutations are `+=` `++=` `-=` `--=`.
+- For lists, many Scala programmers prefer the `::` and `:::` operators.
+- **Stay away from** `++:` `+=:` `++=:`.
+
+![operators-for-adding-and-removing-elements.png](img/operators-for-adding-and-removing-elements.png)
 
 ---
 
