@@ -556,3 +556,23 @@ Need `import io.StdIn._` before using it.
  println("Factorial of 2: " + factorial(2))
  println("Factorial of 3: " + factorial(3))
 ```
+
+### Count Frequencies of Letters in a String
+
+```scala
+// using a mutable map
+// using for loop
+val freq = scala.collection.mutable.Map[Char, Int]()
+for (c <- "IAmAString") freq(c) = freq.getOrElse(c, 0) + 1
+
+// using a immutable map (preferred)
+// using foldLeft
+"IAmAString".foldLeft(Map[Char, Int]())({
+	(m, c) => m + (c -> (m.getOrElse(c, 0) + 1))
+})
+
+// or another style
+(Map[Char, Int]() /: "IAmAString") {
+	(m, c) => m + (c -> (m.getOrElse(c, 0) + 1))
+}
+```
