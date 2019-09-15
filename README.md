@@ -8,6 +8,51 @@ Static members (methods or fields) do not exist in Scala. Rather than defining s
 
 The package name should be **all lower case**. 
 
+### String
+
+### String Interpolation
+
+intorduced in Scala 2.10
+
+`raw` interpolator performs no escaping of literals within the string. For instance,
+
+```scala
+scala> s"foo\nbar"
+res0: String =
+foo
+bar
+
+scala> raw"foo\nbar"
+res1: String = foo\nbar
+```
+
+---
+
+### Regex
+
+How to create a `Regex` object:
+
+- Easist way, invoke the `.r` method on a String. 
+- `import scala.util.matching.Regex`. Then create a `Regex` instance.
+
+Then look for matches.
+
+Example: 
+
+```scala
+val numPattern = "[0-9]+".r
+// or
+val numPattern = new Regex("[0-9]+")
+
+val address = "123 Main Street Suite 101"
+
+val match1 = numPattern.findFirstIn(address)
+
+val matches = numPattern.findAllIn(address)
+```
+
+---
+
 ### Types
 
 - In Scala, every expression has a type.
@@ -72,6 +117,14 @@ breakable {
 
 Here, the control transfer is done by throwing and catching an exception,
 so you should **avoid this mechanism when time is of essence**.
+
+`for/yield` loop is equivalent to `map` .
+
+Scala compiler translates a `for` loop into a `foreach` method call.
+
+`foreach` VS. `map`:
+
+- `foreach` operates on each element without returning a result.
 
 ---
 
@@ -560,7 +613,7 @@ Need `import io.StdIn._` before using it.
 ### Count Frequencies of Letters in a String
 
 ```scala
-// using a mutable map
+// using a mutable map (not preferred)
 // using for loop
 val freq = scala.collection.mutable.Map[Char, Int]()
 for (c <- "IAmAString") freq(c) = freq.getOrElse(c, 0) + 1
