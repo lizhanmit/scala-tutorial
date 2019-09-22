@@ -12,7 +12,7 @@ The package name should be **all lower case**.
 
 ### String Interpolation
 
-intorduced in Scala 2.10
+introduced in Scala 2.10
 
 `raw` interpolator performs no escaping of literals within the string. For instance,
 
@@ -32,7 +32,7 @@ res1: String = foo\nbar
 
 How to create a `Regex` object:
 
-- Easist way, invoke the `.r` method on a String. 
+- Easiest way, invoke the `.r` method on a String. 
 - `import scala.util.matching.Regex`. Then create a `Regex` instance.
 
 Then look for matches.
@@ -46,9 +46,9 @@ val numPattern = new Regex("[0-9]+")
 
 val address = "123 Main Street Suite 101"
 
-val match1 = numPattern.findFirstIn(address)
+val match1 = numPattern.findFirstIn(address)  // Option[String]
 
-val matches = numPattern.findAllIn(address)
+val matches = numPattern.findAllIn(address)  // MatchIterator
 ```
 
 ---
