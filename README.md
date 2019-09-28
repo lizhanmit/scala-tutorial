@@ -98,6 +98,8 @@ For generic type, assign it as `_`.
 
 In Scala, loops are not used as often as in other languages.
 
+#### Break & Continue
+
 Scala has no break or continue. But alternative solutions:
 
 - Use a Boolean control variable.
@@ -107,9 +109,18 @@ Scala has no break or continue. But alternative solutions:
 ```scala
 import scala.util.control.Breaks._
 
+// break
 breakable {
   for (...) {
-    if (...) break; //  Exits the  breakable block
+    if (...) break // exits the breakable block
+    ...
+  }
+}
+
+// continue
+for (...) {
+  breakable {
+    if (...) break
     ...
   }
 }
@@ -118,7 +129,18 @@ breakable {
 Here, the control transfer is done by throwing and catching an exception,
 so you should **avoid this mechanism when time is of essence**.
 
-`for/yield` loop is equivalent to `map` .
+#### `for` & `foreach` & `map`
+
+**Recommended** style for writing longer `for` loop is to use curly braces.
+
+```scala
+for {
+  ...
+  ...
+}
+```
+
+`for/yield` loop (`for` comprehension) without a guard is equivalent to `map`. Guards correspond to `filter`.
 
 Scala compiler translates a `for` loop into a `foreach` method call.
 
