@@ -551,7 +551,20 @@ For linked hash sets, the order is insertion order.
 
 ---
 
-### Implicit Parameters
+### Implicits
+
+How `implicits` works:
+
+If you call a method on a Scala object, and the Scala compiler does not see a definition for that method in the class definition for that object, the compiler will try to convert your object to an instance of a class that does have that method defined.
+
+Take `<string>.toDouble()` as an example. 
+
+1. In Scala, an instance of the `String` class is just a `java.lang.String`, and the `java.lang.String` class does not have a method named `toDouble`. 
+2. The compiler will find that `StringOps` class has.
+3. And the `StringOps` class has a method that can convert an instance of the `String` class into an instance of the `StringOps` class.
+4. The compiler silently performs the conversion of the `String` object into a  `StringOps` object, and then calls the  `toDouble` method on the new object.
+
+#### Implicit Parameters
 
 A method can have an implicit parameter list, marked by the implicit keyword at the start of the parameter list. If the parameters in that parameter list are not passed as usual, Scala will look if it can get an implicit value of the correct type, and if it can, pass it automatically.
 
