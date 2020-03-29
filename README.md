@@ -1,6 +1,85 @@
 # Scala Tutorial
 
+- [Scala Tutorial](#scala-tutorial)
+  - [Basics](#basics)
+  - [Concepts](#concepts)
+  - [Formatting](#formatting)
+    - [Currency Formatting](#currency-formatting)
+  - [String](#string)
+    - [String Interpolation](#string-interpolation)
+  - [Regex](#regex)
+    - [Replace Patterns in Strings](#replace-patterns-in-strings)
+    - [Extracting Parts of a String That Match Patterns](#extracting-parts-of-a-string-that-match-patterns)
+  - [Option](#option)
+    - [Initialization](#initialization)
+    - [Option/Some/None Pattern](#optionsomenone-pattern)
+  - [Match](#match)
+    - [Match Multiple Conditions with One Case](#match-multiple-conditions-with-one-case)
+    - [Pattern Matching](#pattern-matching)
+      - [List Pattern Matching](#list-pattern-matching)
+  - [Types](#types)
+    - [Type Inference](#type-inference)
+    - [Product Type](#product-type)
+    - [Sum Type](#sum-type)
+    - [ADT (Algebraic Data Type)](#adt-algebraic-data-type)
+  - [Exception](#exception)
+  - [Default Values](#default-values)
+  - [Loop](#loop)
+    - [Break & Continue](#break--continue)
+      - [Labeled Breaks](#labeled-breaks)
+    - [`for` & `foreach` & `map`](#for--foreach--map)
+  - [Functions](#functions)
+    - [Side Effects](#side-effects)
+    - [Methods VS Functions](#methods-vs-functions)
+      - [Converting Method into A Function](#converting-method-into-a-function)
+      - [When to Use Methods and When Functions](#when-to-use-methods-and-when-functions)
+    - [Currying](#currying)
+    - [Return](#return)
+    - [Classes](#classes)
+      - [`()` of Methods](#of-methods)
+      - [Getters & Setters](#getters--setters)
+      - [Primary Constructor](#primary-constructor)
+    - [Case Classes](#case-classes)
+      - [Case Classes VS Classes](#case-classes-vs-classes)
+    - [Sealed Classes](#sealed-classes)
+    - [Variables](#variables)
+      - [`val` VS `lazy val` VS `def`](#val-vs-lazy-val-vs-def)
+    - [Traits](#traits)
+      - [Trait Extending Classes](#trait-extending-classes)
+      - [Self Types](#self-types)
+    - [Higher Order Functions](#higher-order-functions)
+      - [A Method that Returns A Function](#a-method-that-returns-a-function)
+    - [Companion Objects & Classes](#companion-objects--classes)
+  - [Collections](#collections)
+    - [Mutable](#mutable)
+    - [Immutable](#immutable)
+    - [Vector](#vector)
+    - [List](#list)
+    - [Set](#set)
+    - [Operators](#operators)
+  - [Implicits](#implicits)
+    - [Implicit Parameters](#implicit-parameters)
+    - [Implicit Classes](#implicit-classes)
+    - [Performance](#performance)
+      - [By-name Parameters](#by-name-parameters)
+    - [Console Input & Output](#console-input--output)
+  - [Imports](#imports)
+  - [ScalaTest](#scalatest)
+    - [Equality](#equality)
+  - [Idioms](#idioms)
+    - [Constants](#constants)
+    - [Null Values](#null-values)
+    - [Splitting Strings](#splitting-strings)
+  - [Snippets](#snippets)
+    - [Factorial Method](#factorial-method)
+    - [Count Frequencies of Letters in a String](#count-frequencies-of-letters-in-a-string)
+    - [How to Create Random Strings in Scala](#how-to-create-random-strings-in-scala)
+    - [Create A Sequence of Random Integer Numbers (Known Length)](#create-a-sequence-of-random-integer-numbers-known-length)
+    - [Creating Your Own Control Structures](#creating-your-own-control-structures)
+
 ## Basics 
+
+Scala is an "expression-oriented programming (EOP) language".
 
 `object` declaration is commonly known as a singleton object.
 
@@ -8,7 +87,46 @@ Static members (methods or fields) do not exist in Scala. Rather than defining s
 
 The package name should be **all lower case**. 
 
-### String
+---
+
+## Concepts
+
+Predicate: A method, function, or anonymous function that takes one or more parameters and returns a Boolean value. For example, `def isEven(i: Int) = if (i % 2 == 0) true else false`.
+
+---
+
+## Formatting
+
+Add commas between numbers: 
+
+```scala
+// for integer number
+val formatter = java.text.NumberFormat.getIntegerInstance
+formatter.format(10000)  // String = 10,000
+
+// for float numbers
+val formatter = java.text.NumberFormat.getInstance
+formatter.format(10000.33)  // String = 10,000.33
+```
+
+### Currency Formatting
+
+```scala
+val formatter = java.text.NumberFormat.getCurrencyInstance
+formatter.format(1234.56789)  // $1,234.57, note here 57 
+```
+
+Can also handle international currency.
+
+```scala
+import java.util.{Currency, Locale}
+val de = Currency.getInstance(new Locale("de", "DE"))
+formatter.setCurrency(de)
+formatter.format(123456.789)  // EUR123,456.79
+```
+---
+
+## String
 
 ### String Interpolation
 
@@ -28,7 +146,7 @@ res1: String = foo\nbar
 
 ---
 
-### Regex
+## Regex
 
 How to create a `Regex` object:
 
@@ -51,22 +169,218 @@ val match1 = numPattern.findFirstIn(address)  // Option[String]
 val matches = numPattern.findAllIn(address)  // MatchIterator
 ```
 
+### Replace Patterns in Strings
+
+- `.replaceAll`
+- `.replaceAllIn`
+- `.replaceFirst`
+- `.replaceFirstIn`
+
+```scala
+// replace all numbers with "x"
+val address = "123 Main Street".replaceAll("[0-9]", "x")
+// or
+val regex = "[0-9]".r
+val address = regex.replaceAllIn("123 Main Street", "x")
+```
+
+### Extracting Parts of a String That Match Patterns
+
+```scala
+val pattern = "([0-9]+) ([A-Za-z]+)".r
+val pattern(count, fruit) = "100 Apples"  // count: 100, fruit: Apples
+```
+
 ---
 
-### Types
+## Option 
+
+### Initialization 
+
+Declare `Option` fields that are not initially populated: `var x = None: Option[Type]`.
+
+For example, `var in = None: Option[FileInputStream]`. 
+
+### Option/Some/None Pattern
+
+Example:
+
+```scala
+def myToInt(s: String): Option[Int] = {
+  try {
+    Some(s.trim.toInt)
+  } catch {
+    case e: NumberFormatException => None
+  }
+}
+
+println(myToInt("1").getOrElse(0))  // 1
+println(myToInt("a").getOrElse(0))  // 0
+
+myToInt(aString) match {
+  case Some(n) => println(n)
+  case None => println("not an integer number")
+}
+
+
+// if you want to throw exception
+@throws(classOf[NumberFormatException])
+def myToInt(s: String) = s.toInt
+```
+
+---
+
+## Match
+
+**Recommend** to use the `@switch` annotation in match expression, which provides a warning at compile time if the switch cannot be compiled to a `tableswitch` or `lookupswitch`. 
+
+Compiling your match expression to a `tableswitch` or `lookupswitch` is **better for performance**, because it results in a branch table rather than a decision tree. 
+
+Example:
+
+```scala
+import scala.annotation.switch
+
+class SwitchDemo {
+  val i = 1
+  val x = (i: @switch) match {
+    case 1 => "One"
+    case 2 => "Two"
+    case _ => "Other"  // you cannot access "_"
+    // if you want to access default value, use a variable
+    // case default => "Other" + default
+  }
+}
+```
+
+Match expression can be used to replace `isInstanceOf` method. For instance, 
+
+```scala
+if (o.isInstanceOf[Person]) { 
+  // handle this ...
+}
+
+// can be replaced with
+o match {
+  case Person => // handle this
+}
+```
+
+### Match Multiple Conditions with One Case 
+
+Separated by the `|` (pipe) character.
+
+Example:
+
+```scala
+val i = 5
+i match {
+  case 1 | 3 | 5 => println("odd")
+  case 2 | 4 | 6 => println("even")
+  case _ => println("other")
+}
+```
+
+### Pattern Matching 
+
+```scala
+def echoWhatYouGaveMe(x: Any): String = x match {
+
+  // constant patterns
+  case 0 => "zero"
+  case true => "true"
+  case "hello" => "you said 'hello'"
+  case Nil => "an empty List"
+
+  // sequence patterns
+  case List(0, _, _) => "a three-element list with 0 as the first element"
+  case List(1, _*) => "a list beginning with 1, having any number of elements"
+  case Vector(1, _*) => "a vector starting with 1, having any number of elements"
+
+  // tuples
+  case (a, b) => s"got $a and $b"
+  case (a, b, c) => s"got $a, $b, and $c"
+
+  // constructor patterns
+  case Person(first, "Alexander") => s"found an Alexander, first name = $first"
+  case Dog("Suka") => "found a dog named Suka"
+
+  // typed patterns
+  case s: String => s"you gave me this string: $s"
+  case i: Int => s"thanks for the int: $i"
+  case f: Float => s"thanks for the float: $f"
+  case a: Array[Int] => s"an array of int: ${a.mkString(",")}"
+  case as: Array[String] => s"an array of strings: ${as.mkString(",")}"
+  case d: Dog => s"dog: ${d.name}"
+  case list: List[_] => s"thanks for the List: $list"
+  case m: Map[_, _] => m.toString
+
+  // variable-binding pattern
+  case list2 @ List(1, _*) => s"$list2"
+  // this does not compile
+  // case list2: List(1, _*) => s"$list2"
+  // here you can access the variable p instead of only attribute first
+  case p @ Person(first, "Doe") => s"$p"
+
+  // exception pattern matching
+  try {
+    x.toInt.toString
+  } catch {
+    case e: Exception => e.getStackTrace.toString
+    // if you do not care what type of exception is 
+    // case _: Throwable => "exception ignored"
+  }
+
+  // the default wildcard pattern
+  case _ => "Unknown"
+}
+```
+
+#### List Pattern Matching 
+
+- Used for recursive algorithm.
+- Must have `Nil` case, because the last element is `Nil`. Otherwise, `MatchError` exception. 
+
+Example 1:
+
+```scala
+def listToString(list: List[String]): String = list match {
+  case s :: rest => s + " " + listToString(rest)
+  case Nil => ""
+}
+
+val fruits = "Apples" :: "Bananas" :: "Oranges" :: Nil
+listToString(fruits)  // "Apples Bananas Oranges "
+```
+
+Example 2: 
+
+```scala
+def sum(list: List[Int]): Int = list match {
+  case n :: rest => n + sum(rest)
+  case Nil => 0
+}
+
+def multiply(list: List[Int]): Int = list match {
+  case n :: rest => n * multiply(rest)
+  case Nil => 1
+}
+```
+
+---
+
+## Types
 
 - In Scala, every expression has a type.
 - `Any` is a super-type of all other types in Scala.
 - The type `Unit` refers to nothing meaningful, which is similarly to `void` in Java.
   - **All functions must return something.** If you do not want to return, return `Unit`. 
   - One instance of `Unit` can be declared literally like `()`.
-- `Null` is provided mostly for interoperability with other JVM languages and should almost **never** be used in Scala code. 
-
----
+- `Null` is provided mostly for interoperability with other JVM languages and should almost **NEVER** be used in Scala code. Use `Option` instead.
 
 ### Type Inference
 
-For recursive methods, the compiler is **NOT** able to infer a result type. Therefore, you **MUST** specify the return type.
+For **recursive methods**, the compiler is **NOT** able to infer a result type. Therefore, you **MUST** specify the return type.
 
 For example:
 
@@ -81,24 +395,56 @@ When **NOT** to rely on type inference:
 - **Recommended** that you make the type explicit for any APIs that will be exposed to users of your code.
 - Type inference can sometimes infer a too-specific type. For example, `var obj = null`. `obj` is Null type, and cannot be reassigned to a different type value.
 
+### Product Type
+
+A type that can hold a value of type A **and** a value of type B. e.g. tuple.
+
+### Sum Type
+
+A type that can hold **either** a value of type A **or** a value of type B, e.g. `sealed` trait inheritance.
+
+### ADT (Algebraic Data Type)
+
+A type that composes sum types and product types to define a data structure, e.g. `sealed trait Shape` composes a sum type (a `Shape` can be a `Circle` or a `Rectangle`), with a product type `Rectangle` (a `Rectangle` holds a `width` and a `height`).
+
 ---
 
-### Default Values
+## Exception 
 
-- 0 for numeric types
-- false for the Boolean type
-- () for the Unit type 
-- null for all object types
+**Scala does not have checked exceptions, you do not need to specify that a method throws the exception.** If you prefer, or you need to interact with Java, you can add `@throws` annotation.
+
+Example, 
+
+```scala
+@throws(classOf[NumberFormatException])
+def myToInt(s: String): Option[Int] = 
+  try {
+    Some(s.toInt)
+  } catch {
+    case e: NumberFormatException => throw e
+  }
+```
+
+---
+
+## Default Values
+
+- 0 for numeric types.
+- `false` for the Boolean type.
+- `()` for the Unit type.
+- `null` for all object types.
 
 For generic type, assign it as `_`.
 
+When creating class variables, you can use the `_` character as a placeholder when assigning an initial value. This does not work in other places.
+
 ---
 
-### Loop
+## Loop
 
 In Scala, loops are not used as often as in other languages.
 
-#### Break & Continue
+### Break & Continue
 
 Scala has no break or continue. But alternative solutions:
 
@@ -129,7 +475,35 @@ for (...) {
 Here, the control transfer is done by throwing and catching an exception,
 so you should **avoid this mechanism when time is of essence**.
 
-#### `for` & `foreach` & `map`
+#### Labeled Breaks
+
+```scala
+object LabeledBreakDemo extends App {
+
+  import scala.util.control._
+
+  val Inner = new Breaks
+  val Outer = new Breaks
+
+  Outer.breakable {
+    for (i <- 1 to 5) {
+      Inner.breakable {
+        for (j <- 'a' to 'e') {
+          if (i == 1 && j == 'c') Inner.break else println(s"i: $i, j: $j")
+          if (i == 2 && j == 'b') Outer.break
+        }
+      }
+    }
+  }
+}
+
+// output
+// i: 1, j: a
+// i: 1, j: b
+// i: 2, j: a
+```
+
+### `for` & `foreach` & `map`
 
 **Recommended** style for writing longer `for` loop is to use curly braces.
 
@@ -150,15 +524,38 @@ Scala compiler translates a `for` loop into a `foreach` method call.
 
 ---
 
-### Functions
+## Functions
 
-A function's name can have characters like +, ++, ~, &,-, --, \, /, :, etc.
+A function's name can have characters like `+`, `++`, `~`, `&`, `-`, `--`, `\`, `/`, `:`, etc.
 
 The last expression of the block becomes the value that the function returns.
 
 In Scala, you can define a function inside any scope.
 
-#### Methods VS Functions
+**Good practice**: Name any unused parameter with `_` in anonymous functions. 
+
+A parameter named `_` cannot be used in the function body.
+
+### Side Effects
+
+A function or expression is said to have a side effect when, in addition to returning a value, it also modifies some state or has some action in the outside world. For instance, 
+
+- printing a string to the console.
+- writing to a file.
+- reading input.
+- modifying a `var`.
+- changing data in a data structure.
+- modifying the value of a field in an object.
+- throwing an exception, or stopping the application when an error occurs.
+- calling other functions that have side effects.
+
+**Good practice**: 
+
+- Push side-effecting code to the boundaries of your application.
+- When a function with no parameters has side effects, you should declare it and call it with empty brackets `()`.
+- **A pure function with no parameters should not have empty brackets, and should not be called with empty brackets.**
+
+### Methods VS Functions
 
 - A method is a part of a class which has a name, a signature, optionally some annotations, and some bytecode.
 - A function is a complete object which can be assigned to a variable.
@@ -181,7 +578,7 @@ f1  // Int => Int = <function1>
 m1  // error: missing argument list for method m1...
 ```
 
-##### Converting Method into A Function
+#### Converting Method into A Function
 
 Method can be converted into a proper function (often referred to as lifting) by calling method with underscore “_” after method name.
 
@@ -189,14 +586,14 @@ Method can be converted into a proper function (often referred to as lifting) by
 val f2 = m1 _  // Int => Int = <function1>
 ```
 
-##### When to Use Methods and When Functions
+#### When to Use Methods and When Functions
 
 - Use functions if you need to pass them around as parameters.
 - Use functions if you want to act on their instances, e.g. `f1.compose(f2)(2)`.
 - Use methods if you want to use default values for parameters e.g. `def m1(age: Int = 2) = ...`.
 - Use methods if you just need to compute and return.
 
-#### Currying
+### Currying
 
 Currying is the process of turning a function that takes two arguments into a function that takes one argument. That function returns a function that consumes the second argument.
 
@@ -474,9 +871,11 @@ val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": Strin
 
 ---
 
-### Collections
+## Collections
 
 ![scala-collections.png](img/scala-collections.png)
+
+Scala's collection classes **differ significantly** from the Java's.
 
 A useful convention if you want to use both mutable and immutable versions of collections is to import just the package `scala.collection.mutable`.
 
@@ -484,11 +883,11 @@ Uniform creation principle: Each Scala collection trait or class has a companion
 
 Use the `==` operator to compare any sequence, set, or map with another collection of the same kind. E.g. `Seq(1, 2, 3) == (1 to 3)  // true`.
 
-#### Mutable 
+### Mutable 
 
 ![scala-mutable-collections.png](img/scala-mutable-collections.png)
 
-#### Immutable
+### Immutable
 
 ![scala-immutable-collections.png](img/scala-immutable-collections.png)
 
@@ -496,12 +895,19 @@ Immutable collections are thread safe. **By default, Scala uses immutable collec
 
 If elements are repeatable, use `List` or `Seq`.
 
-#### Vector
+### Vector
 
 A `Vector` is the immutable equivalent of an  `ArrayBuffer`: an indexed sequence with
 fast random access. Vectors are implemented as trees where each node has up to 32 children. 
 
-#### List
+**Recommend**: Use `Vector` whenever you need to model a sequence of elements, because `vector` is faster than `List` for appending/inserting elements or accessing an element by index.
+
+### List
+
+Scala `List` class is very different from the Java `List` classes: 
+
+- immutable
+- `Array` is an improvement on Java array. But **not recommended** as the "go to" sequential collection class.
 
 A list is either `Nil` or an object with a  head element and a tail that is again a list.
 
@@ -526,7 +932,7 @@ def sum(lst: List[Int]): Int = lst match {
 lst.sum
 ```
 
-#### Set
+### Set
 
 By default, sets are implemented as hash sets in which elements are organized by the value
 of the `hashCode` method.
@@ -537,7 +943,7 @@ For linked hash sets, the order is insertion order.
 
 **Finding an element in a hash set is much faster than in an array or list.**
 
-#### Operators 
+### Operators 
 
 - Append `(:+)` or prepend `(+:)` to a sequence.
 - Add `(+)` to an unordered collection.
@@ -551,7 +957,7 @@ For linked hash sets, the order is insertion order.
 
 ---
 
-### Implicits
+## Implicits
 
 How `implicits` works:
 
@@ -564,7 +970,7 @@ Take `<string>.toDouble()` as an example.
 3. And the `StringOps` class has a method that can convert an instance of the `String` class into an instance of the `StringOps` class.
 4. The compiler silently performs the conversion of the `String` object into a  `StringOps` object, and then calls the  `toDouble` method on the new object.
 
-#### Implicit Parameters
+### Implicit Parameters
 
 A method can have an implicit parameter list, marked by the implicit keyword at the start of the parameter list. If the parameters in that parameter list are not passed as usual, Scala will look if it can get an implicit value of the correct type, and if it can, pass it automatically.
 
@@ -595,6 +1001,10 @@ object ImplicitTest {
   }
 ```
 
+### Implicit Classes
+
+An implicit class **MUST** be defined in a scope where method definitions are allowed, such as inside a class, object, or package object.
+
 ---
 
 ### Performance
@@ -624,6 +1034,48 @@ Need `import io.StdIn._` before using it.
 - `readChar`
 - `readBoolean`
 - `readLine`: can have a parameter as prompt.
+
+---
+
+## Imports
+
+Hide one or more classes while importing other members from the same package. 
+
+For instance, hides the `Random` class, while importing everything else from the `java.util` package: `import java.util.{Random => _, _}`
+
+---
+
+## ScalaTest
+
+### Equality
+
+The default ScalaTest assertion `should` verifies the type equality at runtime.
+
+Class `TypeCheckedTripleEquals` provides `should ===()`, that ensures at compile time that both sides of the equality have the same type. 
+
+**Recommend**: always use `should ===()`, as it will save a lot of time when refactoring code.
+
+---
+
+## Idioms
+
+### Constants
+
+The convention for naming constants is to have the first letter in uppercase.
+
+### Null Values
+
+In Scala, **NEVER use `null` values.** Use `Option` instead.
+
+### Splitting Strings
+
+Trim each string after `split()`. 
+
+```scala
+s.split(",").map(_.trim)
+```
+
+Split a string on whitespace characters: `s.split("\\s+")`
 
 ---
 
@@ -662,5 +1114,30 @@ for (c <- "IAmAString") freq(c) = freq.getOrElse(c, 0) + 1
 // or another style
 (Map[Char, Int]() /: "IAmAString") {
 	(m, c) => m + (c -> (m.getOrElse(c, 0) + 1))
+}
+```
+
+### How to Create Random Strings in Scala
+  
+https://alvinalexander.com/scala/creating-random-strings-in-scala 
+
+### Create A Sequence of Random Integer Numbers (Known Length)
+
+For instance, length is 5, number range is [0, 100).
+
+```scala
+val r = scala.util.Random
+for (i <- 1 to 5) yield r.nextInt(100)  // return Vector(37, 38, 47, 65, 38)
+```
+
+### Creating Your Own Control Structures
+
+For instance, create a double if function. (Notice definition of parameters below.)
+
+```scala
+def doubleif(test1: => Boolean)(test2: => Boolean)(codeBlock: => Unit) {
+  if (test1 && test2) {
+    codeBlock
+  }
 }
 ```
