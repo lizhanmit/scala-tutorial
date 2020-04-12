@@ -35,21 +35,21 @@
       - [When to Use Methods and When Functions](#when-to-use-methods-and-when-functions)
     - [Currying](#currying)
     - [Return](#return)
-    - [Classes](#classes)
-      - [`()` of Methods](#of-methods)
-      - [Getters & Setters](#getters--setters)
-      - [Primary Constructor](#primary-constructor)
+    - [Higher Order Functions](#higher-order-functions)
+      - [A Method that Returns A Function](#a-method-that-returns-a-function)
+  - [Classes](#classes)
+    - [`()` of Methods](#of-methods)
+    - [Getters & Setters](#getters--setters)
+    - [Primary Constructor](#primary-constructor)
     - [Case Classes](#case-classes)
       - [Case Classes VS Classes](#case-classes-vs-classes)
     - [Sealed Classes](#sealed-classes)
     - [Variables](#variables)
       - [`val` VS `lazy val` VS `def`](#val-vs-lazy-val-vs-def)
-    - [Traits](#traits)
-      - [Trait Extending Classes](#trait-extending-classes)
-      - [Self Types](#self-types)
-    - [Higher Order Functions](#higher-order-functions)
-      - [A Method that Returns A Function](#a-method-that-returns-a-function)
     - [Companion Objects & Classes](#companion-objects--classes)
+  - [Traits](#traits)
+    - [Trait Extending Classes](#trait-extending-classes)
+    - [Self Types](#self-types)
   - [Collections](#collections)
     - [Mutable](#mutable)
     - [Immutable](#immutable)
@@ -60,9 +60,9 @@
   - [Implicits](#implicits)
     - [Implicit Parameters](#implicit-parameters)
     - [Implicit Classes](#implicit-classes)
-    - [Performance](#performance)
-      - [By-name Parameters](#by-name-parameters)
-    - [Console Input & Output](#console-input--output)
+  - [Performance](#performance)
+    - [By-name Parameters](#by-name-parameters)
+  - [Console Input & Output](#console-input--output)
   - [Imports](#imports)
   - [ScalaTest](#scalatest)
     - [Equality](#equality)
@@ -614,8 +614,6 @@ mulOneAtATime(6)(7)  // 42
 def mulOneAtATimeMethod(x: Int)(y: Int) = x * y
 ```
 
----
-
 ### Return
 
 `return` is not commonly used in Scala, although noting wrong if you use it.
@@ -637,13 +635,43 @@ def indexOf(str: String, ch: Char): Int = {  // specify Int return type
 }
 ```
 
+### Higher Order Functions
+
+Higher order functions take other functions as parameters or return a function as a result.
+
+```scala
+// here, map() is the higher order function
+val salaries = Seq(20000, 70000, 40000)
+val doubleSalary = (x: Int) => x * 2
+val newSalaries = salaries.map(doubleSalary) // List(40000, 140000, 80000)
+// or
+val newSalaries = salaries.map(x => x * 2)
+// or 
+val newSalaries = salaries.map(_ * 2)
+```
+
+#### A Method that Returns A Function
+
+```scala
+def urlBuilder(ssl: Boolean, domainName: String): (String, String) => String = {
+  val schema = if (ssl) "https://" else "http://"
+  (endpoint: String, query: String) => s"$schema$domainName/$endpoint?$query"
+}
+
+val domainName = "www.example.com"
+def getURL = urlBuilder(ssl=true, domainName)
+val endpoint = "users"
+val query = "id=1"
+val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": String
+```
+
 ---
 
-### Classes
+## Classes
 
 In Scala, a class is not declared as `public`.
 
-#### `()` of Methods
+### `()` of Methods
 
 Good style: 
 
@@ -658,7 +686,7 @@ class Counter {
 }
 ```
 
-#### Getters & Setters
+### Getters & Setters
 
 Fields in classes **automatically** come with getters and setters.
 
@@ -667,15 +695,13 @@ Fields in classes **automatically** come with getters and setters.
 - If the field is a `val`, **only** a getter is generated. If the value of the property never changes after the object has been constructed, use a `val` field.
 - If you do not want any getter or setter, declare the field as `private[this]`. (not commonly used)
 
-#### Primary Constructor
+### Primary Constructor
 
 In Scala, every class has a primary constructor.
 
 If there are no parameters after the class name, then the class has a primary constructor with no parameters.
 
 The primary constructor executes all statements in the class definition.
-
----
 
 ### Case Classes
 
@@ -718,8 +744,6 @@ if (point == yetAnotherPoint) {
 } // Point(1,2) and Point(2,2) are different.
 ```
 
----
-
 ### Sealed Classes
 
 Traits and classes can be marked `sealed` which means all subtypes must be declared in the same file. This assures that all subtypes are known.
@@ -735,9 +759,7 @@ def findPlaceToSit(piece: Furniture): String = piece match {
 }
 ```
 
-This is useful for pattern matching because we do not need a “catch all” case.
-
----
+This is useful for pattern matching because we do not need a "catch all" case.
 
 ### Variables
 
@@ -762,9 +784,18 @@ lazy val words = scala.io.Source.fromFile("/usr/share/dict/words").mkString
 def words = scala.io.Source.fromFile("/usr/share/dict/words").mkString
 ```
 
+### Companion Objects & Classes
+
+- An object with the same name as a class is called a companion object. 
+- Conversely, the class is the object’s companion class. 
+- A companion class or object can access the private members of its companion. 
+- **NOTE**: If a class or object has a companion, both must be defined in the same file. 
+- Use a companion object for methods and values that are not specific to instances of the companion class.
+- `static` members in Java are modeled as ordinary members of a companion object in Scala.
+
 ---
 
-### Traits
+## Traits
 
 - When a trait extends an abstract class, it does not need to implement the abstract members.
 - Traits cannot have parameters.
@@ -794,14 +825,14 @@ iterator.next()  // returns 0
 iterator.next()  // returns 1
 ```
 
-#### Trait Extending Classes
+### Trait Extending Classes
 
 Class A extends class B and trait C, trait C extends class D which is the superclass of class B. This situation is OK.
 
 If class B is unrelated to class D, not OK,
 multiple inheritance.
 
-#### Self Types
+### Self Types
 
 Self type is used to specify what kind of classes can extend this trait.
 
@@ -825,49 +856,6 @@ trait LoggedException extends ConsoleLogger {
 }
 ```
 Only classes with `getMessage()` method can mix in this trait.
-
----
-
-### Higher Order Functions
-
-Higher order functions take other functions as parameters or return a function as a result.
-
-```scala
-// here, map() is the higher order function
-val salaries = Seq(20000, 70000, 40000)
-val doubleSalary = (x: Int) => x * 2
-val newSalaries = salaries.map(doubleSalary) // List(40000, 140000, 80000)
-// or
-val newSalaries = salaries.map(x => x * 2)
-// or 
-val newSalaries = salaries.map(_ * 2)
-```
-
-#### A Method that Returns A Function
-
-```scala
-def urlBuilder(ssl: Boolean, domainName: String): (String, String) => String = {
-  val schema = if (ssl) "https://" else "http://"
-  (endpoint: String, query: String) => s"$schema$domainName/$endpoint?$query"
-}
-
-val domainName = "www.example.com"
-def getURL = urlBuilder(ssl=true, domainName)
-val endpoint = "users"
-val query = "id=1"
-val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": String
-```
-
----
-
-### Companion Objects & Classes
-
-- An object with the same name as a class is called a companion object. 
-- Conversely, the class is the object’s companion class. 
-- A companion class or object can access the private members of its companion. 
-- **NOTE**: If a class or object has a companion, both must be defined in the same file. 
-- Use a companion object for methods and values that are not specific to instances of the companion class.
-- `static` members in Java are modeled as ordinary members of a companion object in Scala.
 
 ---
 
@@ -1007,9 +995,9 @@ An implicit class **MUST** be defined in a scope where method definitions are al
 
 ---
 
-### Performance
+## Performance
 
-#### By-name Parameters
+### By-name Parameters
 
 By-name parameters are only evaluated when used, in contrast to by-value parameters, which is evaluated only once.
 
@@ -1021,7 +1009,7 @@ For example, `def calculate(input: => Int) = input * 37`.
 
 ---
 
-### Console Input & Output
+## Console Input & Output
 
 Need `import io.StdIn._` before using it.
 
