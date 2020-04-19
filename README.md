@@ -53,6 +53,7 @@
   - [Collections](#collections)
     - [Mutable](#mutable)
     - [Immutable](#immutable)
+    - [Iterable](#iterable)
     - [Vector](#vector)
     - [List](#list)
     - [Set](#set)
@@ -882,6 +883,10 @@ Use the `==` operator to compare any sequence, set, or map with another collecti
 Immutable collections are thread safe. **By default, Scala uses immutable collections.** You should use immutable collections in preference.
 
 If elements are repeatable, use `List` or `Seq`.
+
+### Iterable
+
+The `Iterable` trait defines an iterator. When using an iterator, the collection can be traversed only once.
 
 ### Vector
 
