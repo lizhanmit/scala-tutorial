@@ -24,7 +24,7 @@
     - [ADT (Algebraic Data Type)](#adt-algebraic-data-type)
   - [Exception](#exception)
   - [Default Values](#default-values)
-  - [Loop](#loop)
+  - [Control Flow](#control-flow)
     - [Break & Continue](#break--continue)
       - [Labeled Breaks](#labeled-breaks)
     - [`for` & `foreach` & `map`](#for--foreach--map)
@@ -38,7 +38,7 @@
     - [Higher Order Functions](#higher-order-functions)
       - [A Method that Returns A Function](#a-method-that-returns-a-function)
   - [Classes](#classes)
-    - [`()` of Methods](#of-methods)
+    - [`()` of Methods](#-of-methods)
     - [Getters & Setters](#getters--setters)
     - [Primary Constructor](#primary-constructor)
     - [Case Classes](#case-classes)
@@ -58,6 +58,7 @@
     - [List](#list)
     - [Set](#set)
     - [Operators](#operators)
+    - [`collect`](#collect)
   - [Implicits](#implicits)
     - [Implicit Parameters](#implicit-parameters)
     - [Implicit Classes](#implicit-classes)
@@ -67,7 +68,7 @@
   - [Imports](#imports)
   - [ScalaTest](#scalatest)
     - [Equality](#equality)
-  - [Idioms](#idioms)
+  - [Conventions](#conventions)
     - [Constants](#constants)
     - [Null Values](#null-values)
     - [Splitting Strings](#splitting-strings)
@@ -77,10 +78,15 @@
     - [How to Create Random Strings in Scala](#how-to-create-random-strings-in-scala)
     - [Create A Sequence of Random Integer Numbers (Known Length)](#create-a-sequence-of-random-integer-numbers-known-length)
     - [Creating Your Own Control Structures](#creating-your-own-control-structures)
+    - [Read HTML Web Page](#read-html-web-page)
+
+---
 
 ## Basics 
 
 Scala is an "expression-oriented programming (EOP) language".
+
+Scala SDK sits on top of the Java SDK.
 
 `object` declaration is commonly known as a singleton object.
 
@@ -125,6 +131,7 @@ val de = Currency.getInstance(new Locale("de", "DE"))
 formatter.setCurrency(de)
 formatter.format(123456.789)  // EUR123,456.79
 ```
+
 ---
 
 ## String
@@ -412,7 +419,7 @@ A type that composes sum types and product types to define a data structure, e.g
 
 ## Exception 
 
-**Scala does not have checked exceptions, you do not need to specify that a method throws the exception.** If you prefer, or you need to interact with Java, you can add `@throws` annotation.
+**Exceptions in Scala are always unchecked**, which means that the compiler will never force you to catch an exception or declare that a function can throw an exception. So, you **do not need to specify that a method throws the exception**. If you prefer, or you need to interact with Java, you can add `@throws` annotation.
 
 Example, 
 
@@ -441,7 +448,7 @@ When creating class variables, you can use the `_` character as a placeholder wh
 
 ---
 
-## Loop
+## Control Flow
 
 In Scala, loops are not used as often as in other languages.
 
@@ -522,6 +529,7 @@ Scala compiler translates a `for` loop into a `foreach` method call.
 `foreach` VS. `map`:
 
 - `foreach` operates on each element without returning a result.
+
 
 ---
 
@@ -948,6 +956,18 @@ For linked hash sets, the order is insertion order.
 
 ![operators-for-adding-and-removing-elements.png](img/operators-for-adding-and-removing-elements.png)
 
+### `collect` 
+
+`collect` is similar to `map`. It allows you to transform the elements of a collection, but with the added capacity of filtering them. Basically, whenever you want to `filter` and `map` a collection, use `collect` instead.
+
+```scala
+val v = Vector(1, 2, 3)
+
+v.filter(_ != 2).map(_ + 1)
+// or 
+v.collect {case i if i != 2 => i + 1}
+```
+
 ---
 
 ## Implicits
@@ -1050,7 +1070,7 @@ Class `TypeCheckedTripleEquals` provides `should ===()`, that ensures at compile
 
 ---
 
-## Idioms
+## Conventions
 
 ### Constants
 
@@ -1134,3 +1154,7 @@ def doubleif(test1: => Boolean)(test2: => Boolean)(codeBlock: => Unit) {
   }
 }
 ```
+
+### Read HTML Web Page
+
+`val htmlPage = scala.io.Source.fromURL("https://www.packtpub.com/").mkString`
