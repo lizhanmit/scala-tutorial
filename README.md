@@ -625,7 +625,7 @@ def mulOneAtATimeMethod(x: Int)(y: Int) = x * y
 
 ### Return
 
-`return` is not commonly used in Scala, although noting wrong if you use it.
+`return` is not commonly used in Scala, although nothing wrong if you use it.
 
 Think of `return` as a kind of break statement for functions, and **only** use it when you want that breakout functionality.
 
