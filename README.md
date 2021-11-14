@@ -37,6 +37,14 @@
     - [Return](#return)
     - [Higher Order Functions](#higher-order-functions)
       - [A Method that Returns A Function](#a-method-that-returns-a-function)
+  - [Functional Programming](#functional-programming)
+    - [Using Function Literals (Anonymous Functions)](#using-function-literals-anonymous-functions)
+    - [Using Functions as Variables](#using-functions-as-variables)
+      - [Using a Method Like an Anonymous Function](#using-a-method-like-an-anonymous-function)
+      - [Assigning an Existing Function/Method to a Function Variable](#assigning-an-existing-functionmethod-to-a-function-variable)
+    - [Defining a Method That Accepts a Simple Function Parameter](#defining-a-method-that-accepts-a-simple-function-parameter)
+    - [Defining a Method That Accepts Complex Functions](#defining-a-method-that-accepts-complex-functions)
+    - [Closures](#closures)
   - [Classes](#classes)
     - [`()` of Methods](#-of-methods)
     - [Getters & Setters](#getters--setters)
@@ -672,6 +680,239 @@ def getURL = urlBuilder(ssl=true, domainName)
 val endpoint = "users"
 val query = "id=1"
 val url = getURL(endpoint, query) // "https://www.example.com/users?id=1": String
+```
+
+---
+
+## Functional Programming
+
+### Using Function Literals (Anonymous Functions)
+
+As a language that supports functional programming, Scala encourages an expression-oriented programming (EOP) model. Simply put, in EOP, every statement (expression) yields a value. For example, if/else statement returns a value. `val greater = if (a > b) a else b`. Even try/catch statement returns a value. 
+
+```scala
+val result = try {
+    aString.toInt
+} catch {
+    case _ => 0
+}
+```
+
+It helps to think of the `=>` symbol as a transformer.
+
+```scala
+val list = List.range(10)
+
+val event = list.filter((i: Int) => i % 2 == 0)
+
+// Because the Scala compiler can infer from the expression that `i` is an `Int`, the `Int` declaration can be dropped off
+val event = list.filter(i => i % 2 == 0)
+
+// Because Scala lets you use the `_` wildcard instead of a variable name when the parameter appears only once in your function, this code can be simplified even more
+val event = list.filter(_ % 2 == 0)
+```
+
+### Using Functions as Variables
+
+```scala
+// The variable `double` is an instance of a function, known as a function value
+val double = (i: Int) => { i * 2 }
+
+// invoke 
+double(2)  // 4
+
+val list = List.range(1, 5)
+list.map(double)
+```
+
+The Scala compiler is smart enough to look at the body of the function and infer the return type. Thus, it is optional to explicitly declare the return type of a function literal. 
+
+```scala
+// implicit
+val f = (i: Int) => { i % 2 == 0 }
+// explicit
+val f: Int => Boolean = _ % 2 == 0
+
+// implicit
+val add = (x: Int, y: Int) => x + y 
+// explicit
+val add: (Int, Int) => Int = (x, y) => x + y
+```
+
+A function value is an object, and extends the `FunctionN` traits in the main `scala` package.
+
+#### Using a Method Like an Anonymous Function
+
+You can also define a method and then pass it around like an instance variable.
+
+Scala lets you pass in either a method or function, as long as the signature is correct.
+
+```scala
+def modMethod(i: Int): Boolean = i % 2 == 0
+
+val list = List.range(1, 10)
+list.filter(modMethod)
+
+// same as 
+val modFunction = (i: Int) => i % 2 == 0
+list.filter(modFunction)
+
+// Under the covers, `modFunction` is an instance of the `Function1 trait`.
+```
+
+Use `def` to define a method, `val`, to create a function.
+
+#### Assigning an Existing Function/Method to a Function Variable
+
+You can assign an existing method or function to a function variable. 
+
+This is called a partially applied function. It is partially applied because the cos method requires one argument, which you have not yet supplied. 
+
+
+```scala
+val c = scala.math.cos _
+// or
+val c = scala.math.cos(_)
+
+// invoke
+c(0)  // 1.0
+
+// It is wrong to assign the cos function/method to a variable in this way
+val c = scala.math.cos
+
+
+val p = scala.math.pow(_, _)
+p(scala.math.E, 2)  // 7.3890560989306495
+```
+
+### Defining a Method That Accepts a Simple Function Parameter
+
+Pass in a function that has no parameters and return type:
+
+```scala
+def executeFunction(callback: () => Unit) {
+    callback()
+} 
+
+val sayHello = () => { println("Hello") }
+
+// invoke
+executeFunction(sayHello)  // Hello
+```
+
+Pass in a function that has one parameter and `Int` return type:
+
+```scala
+def executeFunction(f: (String) => Int) {
+    f("Hi")
+} 
+
+// or
+// parentheses are optional when the function has only one parameter
+def executeFunction(f: String => Int) {
+    f("Hi")
+} 
+```
+
+### Defining a Method That Accepts Complex Functions
+
+```scala
+def exec(callback: Int => Unit) {
+    callback(1)
+}
+
+val plusOne = (i: Int) => { println(i + 1) }
+
+exec(plusOne)  // 2
+
+val plusTen = (i: Int) => { println(i + 10) }
+
+exec(plusTen)  // 11
+```
+
+The power of the technique: you can easily swap in interchangeable algorithms. This is comparable to swapping out algorithms in the OOP Strategy design pattern.
+
+```scala
+def executeAndPrint(f: (Int, Int) => Int, x: Int, y: Int) {
+    val result = f(x, y)
+    println(result)
+}
+
+val sum = (x: Int, y: Int) => x + y
+val multiply = (x: Int, y: Int) => x * y
+
+executeAndPrint(sum, 2, 9)  // 11
+executeAndPrint(multiply, 3, 9)  // 27
+```
+
+This is similar to defining an interface in Java and then providing concrete implementations of the interface in multiple classes.
+
+Functional programming three-step process: 
+
+1. Define the method. 
+2. Define a function or method to pass in.
+3. Pass the function or method and some parameters to the method. 
+
+### Closures
+
+Scala supports closure functionality.
+
+Use closure when you want to pass a function around like a variable, and while doing so, you want that function to be able to refer to one or more fields that were in the same scope as the function when it was declared.
+
+A closure allows a function to access variables outside its immediate lexical scope.
+
+Example:
+
+```scala
+package otherscope {
+    
+    class Foo {
+        def exec(f: String => Unit, name: String) {
+            f(name)
+        }
+    }
+}
+
+object ClosureExample extends App {
+
+    var hello = "Hello"
+    def sayHello(name: String) {
+        println(s"$hello, $name")
+    }
+
+    val foo = new otherscope.Foo
+    foo.exec(sayHello, "A")  // Hello, A
+
+    hello = "Hola"
+    foo.exec(sayHello, "B")  // Hola, B
+}
+```
+
+Example 2: 
+
+```scala
+package otherscope {
+    
+    class Foo {
+        def buyStuff(f: String => Unit, s: String) {
+            f(s)
+        }
+    }
+}
+
+object ClosureExample extends App {
+
+    import scala.collection.mutable.ArrayBuffer
+    val fruits = ArrayBuffer("apple")
+
+    val addToBasket = (s: String) => {
+        fruits += s
+        println(fruits.mkString(", "))
+    }
+
+    val foo = new otherscope.Foo
+    foo.buyStuff(addToBasket, "cherries")  // apple, cherries
+}
 ```
 
 ---
