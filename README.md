@@ -46,6 +46,7 @@
     - [Defining a Method That Accepts Complex Functions](#defining-a-method-that-accepts-complex-functions)
     - [Closures](#closures)
   - [Classes](#classes)
+    - [Class Hierarchy](#class-hierarchy)
     - [`()` of Methods](#-of-methods)
     - [Getters & Setters](#getters--setters)
     - [Primary Constructor](#primary-constructor)
@@ -920,6 +921,10 @@ object ClosureExample extends App {
 ## Classes
 
 In Scala, a class is not declared as `public`.
+
+### Class Hierarchy
+
+![scala-class-hierarchy.png](img/scala-class-hierarchy.png)
 
 ### `()` of Methods
 
