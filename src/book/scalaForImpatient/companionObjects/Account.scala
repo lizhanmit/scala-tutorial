@@ -1,4 +1,4 @@
-
+package book.scalaForImpatient.companionObjects
 
 class Account {
   val id = Account.newUniqueNumber()
