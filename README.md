@@ -1116,6 +1116,8 @@ Only classes with `getMessage()` method can mix in this trait.
 
 ## Collections
 
+[How to choose a collection class in Scala](https://alvinalexander.com/scala/how-to-choose-collection-class-scala-cookbook/)
+
 ![scala-collections.png](img/scala-collections.png)
 
 Scala's collection classes **differ significantly** from the Java's.
